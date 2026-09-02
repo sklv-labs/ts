@@ -44,3 +44,6 @@ coverage/
 # Yalc
 .yalc/
 yalc.lock
+
+# Claude Code — personal overrides
+.claude/settings.local.json
