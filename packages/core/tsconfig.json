@@ -1,0 +1,9 @@
+{
+  "extends": "@sklv-labs/ts-dev-configs/presets/base/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "test"]
+}
