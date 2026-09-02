@@ -1,6 +1,6 @@
 {
   "name": "@sklv-labs/core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "commonjs",
   "description": "Core TypeScript package for sklv-labs",
   "author": "sklv-labs",
