@@ -43,8 +43,14 @@ need type information; that requires `oxlint-tsgolint`.
 - `typescript/no-unnecessary-type-parameters` — a branded-type helper takes the brand as a type
   parameter used once by design; that is the API, not an accident.
 
-`nestjs.json` additionally turns off `typescript/no-extraneous-class`, because a Nest module is a
-class whose only members are static factories.
+`nestjs.json` additionally turns off two rules:
+
+- `typescript/no-extraneous-class` — a Nest module is a class whose only members are static
+  factories.
+- `typescript/consistent-type-imports` — Nest reads constructor parameter types from
+  `design:paramtypes` at runtime and `ValidationPipe` needs the DTO class itself, neither of which
+  the rule can see. Taking its advice erases the metadata and breaks dependency injection and
+  request validation with no compile error.
 
 ## Prettier, commitlint, lint-staged
 
