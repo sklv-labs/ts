@@ -1,6 +1,6 @@
 {
   "name": "@sklv-labs/dev-configs",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "commonjs",
   "description": "Shared TypeScript, oxlint, Prettier and commitlint configuration for sklv-labs projects",
   "keywords": [
