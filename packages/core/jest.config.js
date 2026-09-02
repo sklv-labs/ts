@@ -1,4 +1,4 @@
-const baseJest = require('@sklv-labs/ts-dev-configs/presets/base/jest.config.js');
+const baseJest = require('@sklv-labs/dev-configs/presets/base/jest.config.js');
 
 module.exports = {
   ...baseJest,

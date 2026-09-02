@@ -2,13 +2,14 @@
 
 Monorepo for the `@sklv-labs` TypeScript packages.
 
-| Package                                              | Description                                  |
-| ---------------------------------------------------- | -------------------------------------------- |
-| [`@sklv-labs/core`](packages/core)                   | Framework-agnostic TypeScript primitives     |
-| [`@sklv-labs/nestjs-config`](packages/nestjs-config) | Type-safe configuration module for NestJS 12 |
+| Package                                              | Description                                          |
+| ---------------------------------------------------- | ---------------------------------------------------- |
+| [`@sklv-labs/core`](packages/core)                   | Framework-agnostic TypeScript primitives             |
+| [`@sklv-labs/nestjs-config`](packages/nestjs-config) | Type-safe configuration module for NestJS 12         |
+| [`@sklv-labs/dev-configs`](packages/dev-configs)     | Shared TypeScript / ESLint / Prettier / Jest presets |
 
-Shared lint/format/tsconfig/jest presets still come from the externally published
-[`@sklv-labs/ts-dev-configs`](https://github.com/sklv-labs/ts-dev-configs).
+Every package in this repo consumes `dev-configs` through `workspace:*`, so a preset change and the
+code it affects land in one commit.
 
 ## Requirements
 

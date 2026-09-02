@@ -1,1 +1,1 @@
-module.exports = require('@sklv-labs/ts-dev-configs/presets/base/prettier.js');
+module.exports = require('@sklv-labs/dev-configs/presets/base/prettier.js');

@@ -1,1 +1,1 @@
-module.exports = require('@sklv-labs/ts-dev-configs/configs/git/commitlint.js');
+module.exports = require('@sklv-labs/dev-configs/configs/git/commitlint.js');

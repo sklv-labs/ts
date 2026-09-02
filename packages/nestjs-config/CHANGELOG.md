@@ -7,23 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-### Changed
-
-- **Renamed from `@sklv-labs/ts-nestjs-config` to `@sklv-labs/nestjs-config`.** The package moved into the
-  [sklv-labs/ts](https://github.com/sklv-labs/ts) monorepo, where the `ts-` prefix is redundant.
-  The old name is deprecated on npm and receives no further releases.
-
-## [0.1.0] - 2026-01-XX
+First release from the [sklv-labs/ts](https://github.com/sklv-labs/ts) monorepo, replacing the
+standalone `@sklv-labs/ts-nestjs-config` package.
 
 ### Added
 
-- Initial release of @sklv-labs/nestjs-config
-- `ConfigModule` with `forRoot` and `forRootAsync` methods for module configuration
-- Comprehensive TypeScript type definitions
-- Full documentation and usage examples
+- `ConfigModule` with `forRoot` and `forRootAsync`.
+- `BaseConfigService` and the `ServiceBaseConfigService` / `baseEnvSchema` presets.
+- Zod-validated, type-safe environment loading with `dotenv` + `dotenv-expand`.
 
-### Features
+### Changed
 
-- **Type-Safe Configuration**: Full TypeScript support
-- **Async Configuration**: Support for dependency injection in async module configuration
-- **NestJS Native**: Built on top of NestJS with seamless integration
+- Targets NestJS 12 (`@nestjs/common` and `@nestjs/core` `^12.0.0`).

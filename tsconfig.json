@@ -1,5 +1,5 @@
 {
-  "extends": "@sklv-labs/ts-dev-configs/presets/base/tsconfig.json",
+  "extends": "@sklv-labs/dev-configs/presets/base/tsconfig.json",
   "compilerOptions": {
     "noEmit": true
   },

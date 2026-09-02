@@ -17,12 +17,9 @@ importers:
       '@commitlint/config-conventional':
         specifier: ^21.0.1
         version: 21.2.2
-      '@eslint/js':
-        specifier: ^10.0.1
-        version: 10.0.1(eslint@10.9.1(jiti@2.6.1))
-      '@sklv-labs/ts-dev-configs':
-        specifier: 0.1.8
-        version: 0.1.8(eslint-plugin-prettier@5.5.6(eslint-config-prettier@10.1.8(eslint@10.9.1(jiti@2.6.1)))(eslint@10.9.1(jiti@2.6.1))(prettier@3.9.6))(eslint@10.9.1(jiti@2.6.1))(prettier@3.9.6)(typescript@6.0.3)
+      '@sklv-labs/dev-configs':
+        specifier: workspace:*
+        version: link:packages/dev-configs
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
@@ -32,18 +29,6 @@ importers:
       eslint:
         specifier: ^10.4.0
         version: 10.9.1(jiti@2.6.1)
-      eslint-config-prettier:
-        specifier: ^10.1.8
-        version: 10.1.8(eslint@10.9.1(jiti@2.6.1))
-      eslint-plugin-import-x:
-        specifier: ^4.16.2
-        version: 4.17.1(@typescript-eslint/utils@8.69.0(eslint@10.9.1(jiti@2.6.1))(typescript@6.0.3))(eslint@10.9.1(jiti@2.6.1))
-      eslint-plugin-prettier:
-        specifier: ^5.5.5
-        version: 5.5.6(eslint-config-prettier@10.1.8(eslint@10.9.1(jiti@2.6.1)))(eslint@10.9.1(jiti@2.6.1))(prettier@3.9.6)
-      globals:
-        specifier: ^17.6.0
-        version: 17.12.0
       husky:
         specifier: ^9.1.7
         version: 9.1.7
@@ -65,9 +50,6 @@ importers:
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
-      typescript-eslint:
-        specifier: ^8.59.4
-        version: 8.69.0(eslint@10.9.1(jiti@2.6.1))(typescript@6.0.3)
 
   packages/core:
     dependencies:
@@ -77,6 +59,46 @@ importers:
       zod:
         specifier: ^4.4.3
         version: 4.5.4
+    devDependencies:
+      '@sklv-labs/dev-configs':
+        specifier: workspace:*
+        version: link:../dev-configs
+
+  packages/dev-configs:
+    dependencies:
+      '@eslint/js':
+        specifier: ^10.0.1
+        version: 10.0.1(eslint@10.9.1(jiti@2.6.1))
+      eslint:
+        specifier: ^9.0.0 || ^10.0.0
+        version: 10.9.1(jiti@2.6.1)
+      eslint-config-prettier:
+        specifier: ^10.1.8
+        version: 10.1.8(eslint@10.9.1(jiti@2.6.1))
+      eslint-plugin-import-x:
+        specifier: ^4.17.1
+        version: 4.17.1(@typescript-eslint/utils@8.69.0(eslint@10.9.1(jiti@2.6.1))(typescript@6.0.3))(eslint@10.9.1(jiti@2.6.1))
+      eslint-plugin-prettier:
+        specifier: ^5.5.6
+        version: 5.5.6(eslint-config-prettier@10.1.8(eslint@10.9.1(jiti@2.6.1)))(eslint@10.9.1(jiti@2.6.1))(prettier@3.9.6)
+      globals:
+        specifier: ^17.12.0
+        version: 17.12.0
+      jest:
+        specifier: ^30.0.0
+        version: 30.5.1(@types/node@25.9.5)
+      prettier:
+        specifier: ^3.6.0
+        version: 3.9.6
+      ts-jest:
+        specifier: ^29.0.0
+        version: 29.4.12(@babel/core@7.29.7)(@jest/transform@30.5.1)(@jest/types@30.5.1)(babel-jest@30.5.1(@babel/core@7.29.7))(jest-util@30.5.1)(jest@30.5.1(@types/node@25.9.5))(typescript@6.0.3)
+      typescript:
+        specifier: ^5.9.0 || ^6.0.0
+        version: 6.0.3
+      typescript-eslint:
+        specifier: ^8.69.0
+        version: 8.69.0(eslint@10.9.1(jiti@2.6.1))(typescript@6.0.3)
 
   packages/nestjs-config:
     dependencies:
@@ -105,6 +127,9 @@ importers:
       '@nestjs/testing':
         specifier: ^12.0.1
         version: 12.0.1(@nestjs/common@12.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@12.0.1(@nestjs/common@12.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@12.0.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@12.0.1(@nestjs/common@12.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@12.0.1))
+      '@sklv-labs/dev-configs':
+        specifier: workspace:*
+        version: link:../dev-configs
       '@types/express':
         specifier: ^5.0.6
         version: 5.0.6
@@ -794,18 +819,6 @@ packages:
 
   '@sinonjs/fake-timers@15.4.0':
     resolution: {integrity: sha512-DsG+8/LscQIQg68J6Ef3dv10u6nVyetYn923s3/sus5eaGfTo1of5WMZSLf0UJc9KDuKPilPH0UDJCjvNbDNCA==}
-
-  '@sklv-labs/ts-dev-configs@0.1.8':
-    resolution: {integrity: sha512-mmE6Fsmp8zuJJLdHCtAaYzCnsbvZ2ruRoAaEWgO4YxhdvGIfk87gqlXbAHUB/Gykckd5bGzv1k7mxCkhYieeVQ==}
-    engines: {node: '>=24.0.0'}
-    peerDependencies:
-      eslint: ^9.0.0 || ^10.0.0
-      eslint-plugin-prettier: ^5.5.4
-      prettier: ^3.6.0
-      typescript: ^5.9.0 || ^6.0.0
-    peerDependenciesMeta:
-      eslint-plugin-prettier:
-        optional: true
 
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
@@ -3581,14 +3594,6 @@ snapshots:
   '@sinonjs/fake-timers@15.4.0':
     dependencies:
       '@sinonjs/commons': 3.0.1
-
-  '@sklv-labs/ts-dev-configs@0.1.8(eslint-plugin-prettier@5.5.6(eslint-config-prettier@10.1.8(eslint@10.9.1(jiti@2.6.1)))(eslint@10.9.1(jiti@2.6.1))(prettier@3.9.6))(eslint@10.9.1(jiti@2.6.1))(prettier@3.9.6)(typescript@6.0.3)':
-    dependencies:
-      eslint: 10.9.1(jiti@2.6.1)
-      prettier: 3.9.6
-      typescript: 6.0.3
-    optionalDependencies:
-      eslint-plugin-prettier: 5.5.6(eslint-config-prettier@10.1.8(eslint@10.9.1(jiti@2.6.1)))(eslint@10.9.1(jiti@2.6.1))(prettier@3.9.6)
 
   '@standard-schema/spec@1.1.0': {}
 

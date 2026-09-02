@@ -7,13 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-### Changed
-
-- **Renamed from `@sklv-labs/ts-core` to `@sklv-labs/core`.** The package moved into the
-  [sklv-labs/ts](https://github.com/sklv-labs/ts) monorepo, where the `ts-` prefix is redundant.
-  The old name is deprecated on npm and receives no further releases.
-
-## [0.1.0] - 2026-01-XX
+First release from the [sklv-labs/ts](https://github.com/sklv-labs/ts) monorepo, replacing the
+standalone `@sklv-labs/ts-core` package.
 
 ### Added
 
+- `Uuid<T>` branded type with `uuid`, `isUuid` and `asUuid` (UUID v7).
+- Environment helpers: `getAppName`, `getAppVersion`, `getFullAppName`, `getEnvironment`,
+  `isDevelopment`, `isProduction`, `isTest`.
+- `Environments` enum.

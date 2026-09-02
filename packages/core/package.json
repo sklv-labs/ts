@@ -1,6 +1,6 @@
 {
   "name": "@sklv-labs/core",
-  "version": "0.1.1",
+  "version": "0.1.0",
   "description": "Core TypeScript package for sklv-labs",
   "author": "sklv-labs",
   "license": "MIT",
@@ -76,5 +76,8 @@
   },
   "engines": {
     "node": ">=24.0.0"
+  },
+  "devDependencies": {
+    "@sklv-labs/dev-configs": "workspace:*"
   }
 }

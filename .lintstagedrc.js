@@ -1,1 +1,1 @@
-module.exports = require('@sklv-labs/ts-dev-configs/configs/git/lint-staged.js');
+module.exports = require('@sklv-labs/dev-configs/configs/git/lint-staged.js');

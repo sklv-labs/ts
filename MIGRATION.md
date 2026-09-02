@@ -1,15 +1,14 @@
 # Migrating a package into the monorepo
 
-`core` and `nestjs-config` already live in `packages/`. The remaining repositories sit in
+`core`, `nestjs-config` and `dev-configs` already live in `packages/`. The remaining repositories sit in
 `../sklv-legacy/` and are still standalone on GitHub:
 
 ```
 go-guidelines (docs only)        ts-nestjs-health
-ts-dev-configs                   ts-nestjs-logger
-ts-nestjs-cls                    ts-nestjs-observability
-ts-nestjs-database               ts-nestjs-openapi
-ts-nestjs-error                  ts-nestjs-package-boilerplate
-                                 ts-nestjs-service-boilerplate
+ts-nestjs-cls                    ts-nestjs-logger
+ts-nestjs-database               ts-nestjs-observability
+ts-nestjs-error                  ts-nestjs-openapi
+ts-nestjs-health
 ```
 
 Not everything belongs here — see the org layout notes in `README.md` for which of these become
@@ -37,7 +36,7 @@ workspace packages, which become template repos, and which become docs.
 3. **Trim `package.json`:**
    - Remove every devDependency that is already in the root `package.json` (typescript, eslint and
      its plugins, prettier, jest, ts-jest, `@types/node`, `@types/jest`, commitlint,
-     `@sklv-labs/ts-dev-configs`). Keep only package-specific ones, e.g. `@nestjs/*`.
+     `@sklv-labs/dev-configs`). Keep only package-specific ones, e.g. `@nestjs/*`.
    - Remove the `version:patch` / `version:minor` / `version:major` scripts — Changesets owns
      versioning now.
    - Add `clean`, and `--passWithNoTests` to `test` if the package has no specs yet.
@@ -59,7 +58,7 @@ workspace packages, which become template repos, and which become docs.
 
 ## Gotchas seen so far
 
-- **pnpm is strict about undeclared dependencies.** `@sklv-labs/ts-dev-configs` imports
+- **pnpm is strict about undeclared dependencies.** `@sklv-labs/dev-configs` imports
   `typescript-eslint`, `eslint-plugin-import-x`, `globals`, `@eslint/js`, `eslint-config-prettier`
   and `eslint-plugin-prettier` without declaring them, which is why the root `.npmrc` hoists
   `*eslint*`, `*prettier*` and `globals`. Fixing this properly means adding those as dependencies of
