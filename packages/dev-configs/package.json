@@ -1,12 +1,13 @@
 {
   "name": "@sklv-labs/dev-configs",
   "version": "0.1.0",
-  "description": "Shared TypeScript, ESLint, Prettier and Jest presets for sklv-labs projects",
+  "type": "commonjs",
+  "description": "Shared TypeScript, oxlint, Prettier and commitlint configuration for sklv-labs projects",
   "keywords": [
     "typescript",
-    "eslint",
+    "oxlint",
     "prettier",
-    "jest",
+    "commitlint",
     "config",
     "preset",
     "nestjs"
@@ -23,45 +24,41 @@
     "provenance": true
   },
   "exports": {
-    "./presets/base/tsconfig.json": "./presets/base/tsconfig.json",
-    "./presets/base/tsconfig.spec.json": "./presets/base/tsconfig.spec.json",
-    "./presets/base/prettier.js": "./presets/base/prettier.js",
-    "./presets/base/jest.config.js": "./presets/base/jest.config.js",
-    "./presets/nestjs/tsconfig.json": "./presets/nestjs/tsconfig.json",
-    "./presets/nestjs/tsconfig.spec.json": "./presets/nestjs/tsconfig.spec.json",
-    "./presets/nestjs/jest.config.js": "./presets/nestjs/jest.config.js",
-    "./eslint/base": "./presets/base/eslint.config.mjs",
-    "./eslint/nestjs": "./presets/nestjs/eslint.config.mjs",
-    "./configs/git/commitlint.js": "./configs/git/commitlint.js",
-    "./configs/git/lint-staged.js": "./configs/git/lint-staged.js"
+    "./oxlint/base.json": "./oxlint/base.json",
+    "./oxlint/nestjs.json": "./oxlint/nestjs.json",
+    "./prettier": "./prettier.js",
+    "./commitlint": "./commitlint.js",
+    "./lint-staged": "./lint-staged.js",
+    "./tsconfig/base.json": "./tsconfig/base.json",
+    "./tsconfig/nestjs.json": "./tsconfig/nestjs.json"
   },
   "files": [
-    "presets",
-    "configs",
+    "tsconfig",
+    "oxlint",
+    "prettier.js",
+    "commitlint.js",
+    "lint-staged.js",
     "README.md",
     "CHANGELOG.md",
     "LICENSE"
   ],
-  "dependencies": {
-    "@eslint/js": "^10.0.1",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-import-x": "^4.17.1",
-    "eslint-plugin-prettier": "^5.5.6",
-    "globals": "^17.12.0",
-    "typescript-eslint": "^8.69.0"
-  },
   "peerDependencies": {
-    "eslint": "^9.0.0 || ^10.0.0",
-    "jest": "^30.0.0",
+    "@commitlint/config-conventional": "^21.0.0",
+    "oxlint": "^1.81.0",
     "prettier": "^3.6.0",
-    "ts-jest": "^29.0.0",
-    "typescript": "^5.9.0 || ^6.0.0"
+    "typescript": ">=6.0.0"
   },
   "peerDependenciesMeta": {
-    "jest": {
+    "@commitlint/config-conventional": {
       "optional": true
     },
-    "ts-jest": {
+    "oxlint": {
+      "optional": true
+    },
+    "prettier": {
+      "optional": true
+    },
+    "typescript": {
       "optional": true
     }
   },

@@ -1,9 +1,6 @@
 # @sklv-labs/core
 
-Framework-agnostic TypeScript primitives shared across the `@sklv-labs` packages: branded UUIDs,
-environment helpers and common enums.
-
-## Installation
+Branded UUIDs, environment helpers and shared enums. No framework dependency.
 
 ```bash
 pnpm add @sklv-labs/core
@@ -11,76 +8,54 @@ pnpm add @sklv-labs/core
 
 Requires Node.js >= 24.
 
-## Subpath exports
-
-| Import                        | Contents                                 |
-| ----------------------------- | ---------------------------------------- |
-| `@sklv-labs/core`             | everything below, re-exported            |
-| `@sklv-labs/core/enums`       | `Environments`                           |
-| `@sklv-labs/core/utils`       | `Uuid`, `uuid`, `isUuid`, `asUuid`       |
-| `@sklv-labs/core/environment` | app name / version / environment helpers |
+| Import                        | Exports                            |
+| ----------------------------- | ---------------------------------- |
+| `@sklv-labs/core`             | everything below                   |
+| `@sklv-labs/core/utils`       | `Uuid`, `uuid`, `isUuid`, `asUuid` |
+| `@sklv-labs/core/environment` | app and environment helpers        |
+| `@sklv-labs/core/enums`       | `Environments`                     |
 
 ## UUIDs
 
-`Uuid<T>` is a branded string type, so a `Uuid<User>` cannot be passed where a `Uuid<Order>` is
-expected. Values are UUID **v7** (time-ordered, index-friendly).
+`Uuid<B>` is a UUID v7 string carrying a phantom brand, so a `Uuid<'User'>` will not typecheck
+where a `Uuid<'Order'>` is expected. v7 is time-ordered, which makes it usable as a primary key
+without the index fragmentation of v4.
 
 ```ts
 import { asUuid, isUuid, uuid, type Uuid } from '@sklv-labs/core/utils';
 
 type UserId = Uuid<'User'>;
 
-const id = uuid<UserId>(); // generated v7 uuid, typed as UserId
+const id = uuid<UserId>();
 
-// runtime-validating type guard
-if (isUuid<UserId>(req.params.id)) {
-  // req.params.id is UserId here
+if (isUuid<UserId>(input)) {
+  // input is UserId — validated at runtime
 }
 
-// unchecked cast, for values already known to be uuids (e.g. straight from the DB)
-const fromDb = asUuid<UserId>(row.id);
-const maybe = asUuid<UserId>(row.parent_id); // string | null -> UserId | null
+const fromDb = asUuid<UserId>(row.id); // trusted, not validated
+const parent = asUuid<UserId>(row.parent_id); // string | null -> UserId | null
 ```
 
-`isUuid` validates via `zod`; `asUuid` is a compile-time cast only and performs **no** validation.
+`isUuid` validates the format with zod. `asUuid` only applies the brand and performs no check —
+use it for values whose format is already guaranteed, such as a database column, and `isUuid` for
+anything coming from outside.
 
 ## Environment
 
 ```ts
-import {
-  getAppName,
-  getAppVersion,
-  getEnvironment,
-  getFullAppName,
-  isDevelopment,
-  isProduction,
-  isTest,
-} from '@sklv-labs/core/environment';
+import { getEnvironment, getFullAppName, isProduction } from '@sklv-labs/core/environment';
 
-getAppName(); // process.env.npm_package_name, or 'unknown'
-getAppVersion(); // process.env.npm_package_version, or 'unknown'
 getFullAppName(); // 'my-service@1.2.3'
-getEnvironment(); // Environments | undefined, from NODE_ENV
+getEnvironment(); // Environments | undefined
 isProduction(); // NODE_ENV === 'production'
 ```
 
-`getAppName` and `getAppVersion` read the `npm_package_*` variables that npm/pnpm inject when a
-process is started through a package script. Outside of that they fall back to `'unknown'`.
+`getEnvironment` returns `undefined` when `NODE_ENV` is unset **or** holds a value outside
+`Environments`, so an unexpected value never masquerades as a known environment.
 
-## Enums
-
-```ts
-import { Environments } from '@sklv-labs/core/enums';
-
-Environments.DEVELOPMENT; // 'development'
-Environments.PRODUCTION; // 'production'
-Environments.TEST; // 'test'
-```
-
-## Contributing
-
-This package lives in the [sklv-labs monorepo](https://github.com/sklv-labs/ts). See the
-root `README.md` for the development and release workflow.
+`getAppName` and `getAppVersion` read `npm_package_name` and `npm_package_version`, which npm and
+pnpm inject only when the process is started through a package script. Outside that they return
+`'unknown'`.
 
 ## License
 

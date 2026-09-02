@@ -1,22 +1,16 @@
-# sklv-labs
+# sklv-labs/ts
 
 Monorepo for the `@sklv-labs` TypeScript packages.
 
-| Package                                              | Description                                          |
-| ---------------------------------------------------- | ---------------------------------------------------- |
-| [`@sklv-labs/core`](packages/core)                   | Framework-agnostic TypeScript primitives             |
-| [`@sklv-labs/nestjs-config`](packages/nestjs-config) | Type-safe configuration module for NestJS 12         |
-| [`@sklv-labs/dev-configs`](packages/dev-configs)     | Shared TypeScript / ESLint / Prettier / Jest presets |
-
-Every package in this repo consumes `dev-configs` through `workspace:*`, so a preset change and the
-code it affects land in one commit.
+| Package                                              | Description                                               |
+| ---------------------------------------------------- | --------------------------------------------------------- |
+| [`@sklv-labs/core`](packages/core)                   | Branded UUIDs, environment helpers, shared enums          |
+| [`@sklv-labs/nestjs-config`](packages/nestjs-config) | Zod-validated configuration module for NestJS 12          |
+| [`@sklv-labs/dev-configs`](packages/dev-configs)     | Shared TypeScript, oxlint, Prettier and commitlint config |
 
 ## Requirements
 
-- Node.js >= 24
-- pnpm >= 9.9 (`corepack enable` picks up the pinned version from `packageManager`)
-
-## Getting started
+Node.js >= 24 and pnpm 11. `corepack enable` picks up the pinned version from `packageManager`.
 
 ```bash
 pnpm install
@@ -25,94 +19,81 @@ pnpm build
 
 ## Tasks
 
-Every task runs through [Turborepo](https://turborepo.com), which respects the dependency graph
-(`nestjs-config` builds only after `core`) and caches results in `.turbo/`.
+`build` and `type-check` run per package through Turborepo, which orders them by the dependency
+graph and caches results. `lint`, `test` and `format` run once for the whole repo.
 
-| Command           | What it does                                 |
+| Command           | Runs                                         |
 | ----------------- | -------------------------------------------- |
-| `pnpm build`      | `tsc` in each package, topologically ordered |
-| `pnpm type-check` | `tsc --noEmit` in each package               |
-| `pnpm lint`       | ESLint over `src/**/*.ts`                    |
-| `pnpm lint:fix`   | ESLint with `--fix`                          |
-| `pnpm test`       | Jest in each package                         |
-| `pnpm test:cov`   | Jest with coverage                           |
-| `pnpm format`     | Prettier over the whole repo                 |
+| `pnpm build`      | `tsc` per package, in topological order      |
+| `pnpm type-check` | `tsc --noEmit` per package                   |
+| `pnpm lint`       | `oxlint --type-aware` across the repo        |
+| `pnpm lint:fix`   | the same, with `--fix`                       |
+| `pnpm test`       | `vitest run`, one project per package        |
+| `pnpm test:cov`   | the same, with V8 coverage                   |
+| `pnpm format`     | Prettier over everything                     |
 | `pnpm clean`      | remove `dist/`, `coverage/`, `*.tsbuildinfo` |
 
-Scope a task to one package:
+Scope to one package with `pnpm --filter @sklv-labs/core build`.
 
-```bash
-pnpm --filter @sklv-labs/core build
-pnpm turbo run test --filter=@sklv-labs/nestjs-config
+## Toolchain
+
+TypeScript 7 (the native compiler), [oxlint](https://oxc.rs) with type-aware rules via
+`oxlint-tsgolint`, Vitest, Prettier, Changesets. oxlint is the linter rather than ESLint because
+`typescript-eslint` does not support TypeScript 7; `oxlint-tsgolint` runs on typescript-go and
+tracks it directly.
+
+## Configuration
+
+One config file per tool at the repo root. Each one points at
+[`@sklv-labs/dev-configs`](packages/dev-configs) rather than restating settings:
+
 ```
+.oxlintrc.json        extends dev-configs/oxlint/base.json
+.prettierrc           "@sklv-labs/dev-configs/prettier"
+.commitlintrc.json    extends @sklv-labs/dev-configs/commitlint
+vitest.config.ts      projects: packages/*
+turbo.json            build + type-check task graph
+package.json          "lint-staged" key
+```
+
+`packages/*/tsconfig.json` is the one config that must be per package, because `rootDir` and
+`outDir` differ. `packages/nestjs-config/.oxlintrc.json` extends the NestJS oxlint preset instead
+of the base one.
 
 ## Internal dependencies
 
-Packages depend on each other with the `workspace:^` protocol, so `pnpm` symlinks the local source
-instead of downloading from npm:
-
-```json
-"dependencies": {
-    "@sklv-labs/core": "workspace:^"
-}
-```
-
-At publish time Changesets rewrites `workspace:^` to the real version range, so consumers on npm get
-a normal `^0.1.1`.
+Packages depend on each other with `workspace:^`, so pnpm links the local source. Changesets
+rewrites it to a real version range when publishing.
 
 ## Releasing
 
-Versioning and publishing are handled by [Changesets](https://github.com/changesets/changesets).
+1. Commit your change.
+2. `pnpm changeset` — pick the packages, the bump, and write the note. Commit the generated file.
+3. On merge to `main`, the Release workflow opens a `chore(release): version packages` PR that
+   applies the changesets and updates each `CHANGELOG.md`.
+4. Merge it. The workflow publishes to npm with provenance.
 
-1. Make your change and commit it.
-2. `pnpm changeset` — select the affected packages, the bump type, and write the release note.
-   Commit the generated file in `.changeset/`.
-3. Merge to `main`. The **Release** workflow opens a `chore(release): version packages` PR that
-   applies every pending changeset, bumps versions and updates each `CHANGELOG.md`.
-4. Merge that PR — the workflow publishes the bumped packages to npm with provenance.
-
-Versions are **independent** per package. Bumping `core` automatically patch-bumps
-`nestjs-config`, because it depends on it.
-
-The workflow needs one repository secret: `NPM_TOKEN` (an npm automation token with publish rights
-on the `@sklv-labs` scope).
+Versions are independent per package. Bumping `core` patch-bumps `nestjs-config`, which depends on
+it. The workflow needs one repository secret, `NPM_TOKEN`.
 
 ## Conventions
 
-- Conventional Commits, enforced by `commitlint` on `commit-msg`.
-- `lint-staged` runs ESLint and Prettier on staged files at `pre-commit`.
-- Both hooks are installed by `husky` via the root `prepare` script.
+Conventional Commits, enforced by commitlint on `commit-msg`. `lint-staged` runs oxlint and
+Prettier on staged files at `pre-commit`. Both hooks are installed by husky via `prepare`.
 
 ## Where things live in the org
 
-One monorepo **per language ecosystem**, not one for the whole org — release mechanics do not mix
-(npm versions via Changesets and a publish step; Go modules version via git tags with no publish
-step at all).
+One monorepo per language ecosystem, not one for the whole org — npm packages version through
+Changesets and a publish step, Go modules version through git tags and have no publish step.
 
 ```
 github.com/sklv-labs/
-├─ ts                        this repo — publishable TypeScript packages
-├─ .github                   org profile, reusable workflows, org-level secrets
-├─ guidelines                language/architecture guidelines, docs only
-├─ nestjs-service-template   GitHub template repo for a new deployable service
-└─ go                        added only when there is real Go code
+├─ ts          this repo
+├─ .github     org profile, reusable workflows
+└─ guidelines  language and architecture guidelines
 ```
 
-The npm scope `@sklv-labs` is language-neutral and stays as-is; inside this repo the `ts-` prefix is
-redundant, so packages are named `@sklv-labs/core`, `@sklv-labs/nestjs-config`, and so on.
-
-What does **not** belong here:
-
-- **Services / apps.** They are separately deployable and have their own lifecycle. They consume
-  these packages from npm.
-- **Templates.** `gh repo create --template` cannot point at a monorepo subdirectory, so boilerplate
-  for a new service stays its own repository, flagged as a template.
-- **Guidelines and other prose.** Docs repos have no build, no tests and no releases; they gain
-  nothing from the workspace.
-
-## Adding a package
-
-See [MIGRATION.md](MIGRATION.md).
+Services, templates and prose docs live in their own repositories.
 
 ## License
 

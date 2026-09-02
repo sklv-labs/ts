@@ -1,89 +1,69 @@
 # @sklv-labs/nestjs-config
 
-A NestJS config package for quick library development.
-
-## Features
-
-- 🎯 **Type-Safe** - Full TypeScript support with comprehensive type definitions
-- 🚀 **Easy Setup** - Simple API for both synchronous and asynchronous configuration
-- 🛠️ **NestJS Native** - Built on top of NestJS with seamless integration
-- 📦 **Well Configured** - Pre-configured with ESLint, Prettier, Jest, and TypeScript
-
-## Installation
+Configuration for NestJS built on a zod schema: the environment is validated once at startup, and
+injected as a typed object.
 
 ```bash
-npm install @sklv-labs/nestjs-config
+pnpm add @sklv-labs/nestjs-config
+pnpm add @nestjs/common reflect-metadata
 ```
 
-### Peer Dependencies
+Requires Node.js >= 24 and NestJS 12.
 
-This package requires the following peer dependencies:
+## Usage
 
-```bash
-npm install @nestjs/common@^11.1.11 @nestjs/core@^11.1.11
-```
+Define a schema, extend the base config service, register the module.
 
-**Note:** This package requires Node.js 24 LTS or higher.
+```ts
+import { baseEnvSchema, ConfigModule, ServiceBaseConfigService } from '@sklv-labs/nestjs-config';
+import { Injectable } from '@nestjs/common';
+import { z } from 'zod';
 
-## Quick Start
+const envSchema = baseEnvSchema.extend({
+  DATABASE_URL: z.string().url(),
+});
 
-```typescript
-// app.module.ts
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@sklv-labs/nestjs-config';
+type Env = z.infer<typeof envSchema>;
+
+@Injectable()
+export class ConfigService extends ServiceBaseConfigService<Env> {
+  database = { url: this.env.DATABASE_URL };
+}
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      // Your configuration options
-    }),
-  ],
+  imports: [ConfigModule.forRoot({ validationSchema: envSchema, providers: [ConfigService] })],
 })
 export class AppModule {}
 ```
 
-### Async Configuration
+`forRoot` parses `process.env` against the schema and throws with every failing key listed if
+validation fails, so a misconfigured service dies at boot rather than at first use. The module is
+`@Global()`, so `ConfigService` is injectable anywhere without re-importing.
 
-```typescript
-// app.module.ts
-import { Module } from '@nestjs/common';
-import { ConfigModule as NestConfigModule, ConfigService } from '@nestjs/config';
-import { ConfigModule } from '@sklv-labs/nestjs-config';
+`baseEnvSchema` covers `NODE_ENV`, `PORT`, `HOST`, `npm_package_name` and `npm_package_version`.
+`ServiceBaseConfigService` exposes them as `server` and `package`.
 
-@Module({
-  imports: [
-    NestConfigModule.forRoot(),
-    ConfigModule.forRootAsync({
-      imports: [NestConfigModule],
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        // Your configuration options
-      }),
-    }),
-  ],
-})
-export class AppModule {}
+## loadEnv
+
+`loadEnv()` reads `.env` through dotenv and applies variable expansion. Call it before Nest boots —
+typically at the top of `main.ts` — since `forRoot` reads `process.env` as it already stands.
+
+```ts
+import { loadEnv } from '@sklv-labs/nestjs-config';
+
+loadEnv({ silent: true });
 ```
 
-## Development
+## One caveat
 
-```bash
-# Build
-npm run build
+`forRoot` **replaces** `process.env` with the parsed object, so zod-coerced values keep their real
+types (`PORT` stays a `number`). Two consequences: `process.env` values are no longer guaranteed to
+be strings, and because it is no longer Node's native environment object, variables are not
+inherited by child processes. If you spawn subprocesses that need the environment, pass it
+explicitly.
 
-# Lint
-npm run lint
-
-# Format
-npm run format
-
-# Test
-npm run test
-
-# Type check
-npm run type-check
-```
+See [docs/SERVICE_CONFIG_PATTERN.md](docs/SERVICE_CONFIG_PATTERN.md) for a fuller worked example.
 
 ## License
 
-MIT © [sklv-labs](https://github.com/sklv-labs)
+MIT

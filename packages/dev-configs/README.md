@@ -1,57 +1,69 @@
 # @sklv-labs/dev-configs
 
-Shared TypeScript, ESLint, Prettier and Jest presets for sklv-labs projects.
-
-## Installation
+Shared TypeScript, oxlint, Prettier and commitlint configuration.
 
 ```bash
-pnpm add -D @sklv-labs/dev-configs eslint prettier typescript
-# add jest + ts-jest too if you use the jest presets
+pnpm add -D @sklv-labs/dev-configs typescript oxlint oxlint-tsgolint prettier
 ```
 
-## Presets
-
-Two flavours: `base` for plain TypeScript, `nestjs` for NestJS packages (adds decorator metadata,
-`prettier/prettier` as an error, and coverage thresholds).
-
-`tsconfig.json`
+## TypeScript
 
 ```json
 {
-  "extends": "@sklv-labs/dev-configs/presets/base/tsconfig.json",
+  "extends": "@sklv-labs/dev-configs/tsconfig/base.json",
   "compilerOptions": { "outDir": "./dist", "rootDir": "./src" },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["**/*.test.ts"]
 }
 ```
 
-`eslint.config.mjs`
+`tsconfig/nestjs.json` adds `experimentalDecorators`, `emitDecoratorMetadata` and relaxes
+`strictPropertyInitialization`, which NestJS needs.
 
-```js
-import baseEslint from '@sklv-labs/dev-configs/eslint/base';
-import { defineConfig } from 'eslint/config';
+Both target ES2024 with `module: nodenext` and enable `strict` plus `noUncheckedIndexedAccess`.
 
-export default defineConfig([...baseEslint]);
+## oxlint
+
+oxlint resolves `extends` as a **file path**, not a package specifier, so the path goes through
+`node_modules`:
+
+```json
+{
+  "extends": ["./node_modules/@sklv-labs/dev-configs/oxlint/base.json"]
+}
 ```
 
-`jest.config.js` · `.prettierrc.js` · `commitlint.config.js` · `.lintstagedrc.js`
+Use `oxlint/nestjs.json` for NestJS code. Run with `oxlint --type-aware` to enable the rules that
+need type information; that requires `oxlint-tsgolint`.
 
-```js
-module.exports = require('@sklv-labs/dev-configs/presets/base/jest.config.js');
-module.exports = require('@sklv-labs/dev-configs/presets/base/prettier.js');
-module.exports = require('@sklv-labs/dev-configs/configs/git/commitlint.js');
-module.exports = require('@sklv-labs/dev-configs/configs/git/lint-staged.js');
+`base.json` turns two rules off deliberately:
+
+- `typescript/no-unsafe-type-assertion` — branded types cannot be produced without an assertion,
+  so the rule fires on correct code.
+- `typescript/no-unnecessary-type-parameters` — a branded-type helper takes the brand as a type
+  parameter used once by design; that is the API, not an accident.
+
+`nestjs.json` additionally turns off `typescript/no-extraneous-class`, because a Nest module is a
+class whose only members are static factories.
+
+## Prettier, commitlint, lint-staged
+
+```jsonc
+// .prettierrc
+"@sklv-labs/dev-configs/prettier"
 ```
 
-Swap `base` for `nestjs` where a NestJS variant exists. The full list of importable paths is the
-`exports` map in `package.json`.
+```json
+// .commitlintrc.json
+{ "extends": ["@sklv-labs/dev-configs/commitlint"] }
+```
 
-## Notes
+```js
+// package.json "lint-staged", or .lintstagedrc.js
+module.exports = require('@sklv-labs/dev-configs/lint-staged');
+```
 
-The presets set `projectService: true` but deliberately do **not** set `tsconfigRootDir` — ESLint
-resolves it from the directory it runs in, which is what you want in a workspace.
-
-`eslint`, `prettier`, `typescript`, `jest` and `ts-jest` are peer dependencies; the ESLint plugins
-the presets import are ordinary dependencies, so they resolve under pnpm without hoisting.
+commitlint extends `@commitlint/config-conventional`; install it alongside.
 
 ## License
 

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { BaseConfigService } from '../config';
 
-import { BaseEnvType } from './service.base-env.schema';
+import type { BaseEnvType } from './service.base-env.schema';
 
 /**
  * Base config service for NestJS services with common properties.

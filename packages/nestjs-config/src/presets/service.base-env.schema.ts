@@ -1,5 +1,5 @@
 import { Environments } from '@sklv-labs/core/enums';
-import z from 'zod';
+import { z } from 'zod';
 
 export const baseEnvSchema = z.object({
   npm_package_name: z.string(),

@@ -1,6 +1,8 @@
 import { getFullAppName, isProduction } from '@sklv-labs/core/environment';
-import { config, DotenvConfigOptions } from 'dotenv';
-import { expand, DotenvExpandOptions } from 'dotenv-expand';
+import type { DotenvConfigOptions } from 'dotenv';
+import { config } from 'dotenv';
+import type { DotenvExpandOptions } from 'dotenv-expand';
+import { expand } from 'dotenv-expand';
 
 export type LoadEnvOptions = Partial<{
   config: DotenvConfigOptions;
@@ -15,7 +17,7 @@ export const loadEnv = (
       quiet: isProduction(),
     },
     silent: false,
-  }
+  },
 ) => {
   const result = expand({
     ...config(options.config),
@@ -23,9 +25,9 @@ export const loadEnv = (
   });
 
   if (!options.silent) {
-    // eslint-disable-next-line no-console
+    // oxlint-disable-next-line no-console -- deliberate load summary, suppressed via `silent`
     console.log(
-      `[${getFullAppName()}] Loaded ${Object.keys(result.parsed || {}).length} environment variables`
+      `[${getFullAppName()}] Loaded ${Object.keys(result.parsed || {}).length} environment variables`,
     );
   }
 

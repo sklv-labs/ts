@@ -1,39 +1,17 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "stream",
-  "globalDependencies": ["tsconfig.json", ".prettierrc.js", ".npmrc"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "inputs": ["src/**", "tsconfig*.json", "package.json"],
+      "inputs": ["src/**", "tsconfig.json", "package.json"],
       "outputs": ["dist/**", "*.tsbuildinfo"]
     },
     "type-check": {
       "dependsOn": ["^build"],
-      "inputs": ["src/**", "tsconfig*.json", "package.json"],
+      "inputs": ["src/**", "tsconfig.json", "package.json"],
       "outputs": []
     },
-    "lint": {
-      "dependsOn": ["^build"],
-      "inputs": ["src/**", "tsconfig*.json", "eslint.config.mjs", "package.json"],
-      "outputs": []
-    },
-    "lint:fix": {
-      "dependsOn": ["^build"],
-      "cache": false
-    },
-    "test": {
-      "dependsOn": ["^build"],
-      "inputs": ["src/**", "tsconfig*.json", "jest.config.js", "package.json"],
-      "outputs": []
-    },
-    "test:cov": {
-      "dependsOn": ["^build"],
-      "inputs": ["src/**", "tsconfig*.json", "jest.config.js", "package.json"],
-      "outputs": ["coverage/**"]
-    },
-    "clean": {
-      "cache": false
-    }
+    "clean": { "cache": false }
   }
 }

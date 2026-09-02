@@ -6,10 +6,6 @@
     "lib": ["ES2024"],
     "moduleResolution": "nodenext",
     "resolveJsonModule": true,
-    "allowJs": true,
-    "checkJs": false,
-    "outDir": "./dist",
-    "rootDir": "./",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -22,7 +18,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "isolatedModules": true,
-    "allowSyntheticDefaultImports": true,
-    "types": ["node"]
+    "types": ["node"],
+    "noUncheckedIndexedAccess": true
   }
 }
