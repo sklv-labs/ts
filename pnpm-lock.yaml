@@ -47,6 +47,9 @@ importers:
       typescript:
         specifier: ^7.0.2
         version: 7.0.2
+      typescript-editor:
+        specifier: npm:typescript@^6.0.3
+        version: typescript@6.0.3
       vitest:
         specifier: ^4.1.11
         version: 4.1.11(@types/node@26.4.1)(@vitest/coverage-v8@4.1.11)(vite@8.2.2(@types/node@26.4.1)(jiti@2.6.1)(yaml@2.9.0))
@@ -1305,6 +1308,11 @@ packages:
     resolution: {integrity: sha512-AswgMPnpOoaVZHrrSBejETzEbuIA69OVGwfkHwfrY0A23VjWXBANzgq9+OymWOHAIArB7D1+1z498WY8fGg1Jw==}
     hasBin: true
 
+  typescript@6.0.3:
+    resolution: {integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   typescript@7.0.2:
     resolution: {integrity: sha512-8FYau96o3NKOhbjKi/qNvG/W5jhzxkbdm5sj9AbZ/5T5sWqn3hJgLfGx27sRKZWTvyzCP8dLRBTf5tBTSRVUNA==}
     engines: {node: '>=16.20.0'}
@@ -2464,6 +2472,8 @@ snapshots:
       '@turbo/linux-arm64': 2.10.12
       '@turbo/windows-64': 2.10.12
       '@turbo/windows-arm64': 2.10.12
+
+  typescript@6.0.3: {}
 
   typescript@7.0.2:
     optionalDependencies:

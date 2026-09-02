@@ -68,6 +68,13 @@ directory before changing `exports`.
 - Local `node` on this machine is 22 via proto; the repo needs 24. Use `corepack pnpm`, or put
   `~/.nvm/versions/node/v24.12.0/bin` first on `PATH`.
 
+## Editor
+
+`typescript-editor` is an alias for typescript@6, present only so editor language servers have a
+tsserver — TypeScript 7 ships none, so Zed's vtsls cannot drive it, and `.zed/settings.json` points
+`tsdk` at the alias. The build and CI use typescript@7. Remove both once the editor supports TS 7,
+and do not use the alias for anything else.
+
 ## Writing
 
 Conventional Commits, enforced by commitlint. READMEs are plain prose — no emoji, no bold feature
